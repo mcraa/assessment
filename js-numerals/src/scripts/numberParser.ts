@@ -60,7 +60,12 @@ export class NumberParser {
             let astext = digits.nums[i].toString()
             if (astext.length > 2) {
                 result.push(
-                    this.getTextsForDigits(this.analyzeDigits(digits.nums[i], digits.bases[i]))
+                    ((): string => {
+                        let inner = this.analyzeDigits(digits.nums[i], digits.bases[i]);
+                        let innerParts = this.getTextsForDigits(inner);
+                        let innerSeparators = this.getSeparators(inner);
+                        return this.concatFragments(innerParts, innerSeparators, inner.bases.length);
+                    })()
                     + this.getBaseWord(digits.bases[i]));
             } else if (astext.length == 2) {
                 if (astext[0] == '1') {
@@ -127,14 +132,15 @@ export class NumberParser {
         return separators;
     }
 
-    concatFragments(fragments: string[], separators: string[], count: number): string {
-        let result = fragments[0];
-        for (var i = 1; i < count; ++i) {
+    concatFragments(fragments: string[], separators: string[], count: number): string {        
+        let result = "";        
+        
+        for (var i = 0; i < count; ++i) {
             if (fragments[i] && fragments[i].length){
                 result = result.concat(separators[i].concat(fragments[i]))
             }   
         }
 
-        return result;
+        return result.trim();
     }
 }

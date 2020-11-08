@@ -30,15 +30,18 @@ export class NumberParser {
         }
 
         let negative = false;
+        let result = "";
 
         if (parsed == 0) return "zero"
         if (parsed < 0) { negative = true; parsed = parsed * -1}
 
         if (numText.length == 4 && numText[1] != '0') {
-            return `${negative ? "negative" : ""} ${this.convertProcess(parsed, 100)}`
+            result = `${negative ? "negative" : ""} ${this.convertProcess(parsed, 100)}`
         } else {
-            return `${negative ? "negative" : ""} ${this.convertProcess(parsed, 1000000)}`
+            result = `${negative ? "negative" : ""} ${this.convertProcess(parsed, 1000000)}`
         }
+
+        return result.trim()
     }
 
     convertProcess(num: number, base: number): string {
@@ -66,38 +69,25 @@ export class NumberParser {
     }
 
     getTextsForDigits(digits: DigitAnalytics): string[] {
-        let result: string[] = [];
+        let result: string[] = [];        
 
         for (var i = 0; i < digits.bases.length; ++i) {
             if (digits.nums[i] == 0) { result.push(""); continue; }
 
             let astext = digits.nums[i].toString()
-            if (astext.length > 2) {
-                result.push(
-                    ((): string => {
-                        let inner = this.analyzeDigits(digits.nums[i], digits.bases[i]);
-                        let innerParts = this.getTextsForDigits(inner);
-                        let innerSeparators = this.getSeparators(inner);
-                        return this.concatFragments(innerParts, innerSeparators, inner.bases.length);
-                    })()
-                    + this.getBaseWord(digits.bases[i]));
-            } else if (astext.length == 2) {
-                if (astext[0] == '1') {
-                    result.push(this.teens[parseInt(astext[1])] + this.getBaseWord(digits.bases[i]))
-                } else {
-                    result.push(this.tens[parseInt(astext[0])] + this.getBaseWord(digits.bases[i]))
-                }
+            if (astext.length > 1) {
+                result.push(`${this.convertProcess(digits.nums[i], digits.bases[i])}${this.getBaseWord(digits.bases[i])}`);                
             } else {
                 if (digits.bases[i] == 10) {
                     if (digits.nums[i] == 1) {
-                        result.push(this.teens[digits.nums[i + 1]] + this.getBaseWord(digits.bases[i]))
+                        result.push(`${this.teens[digits.nums[i + 1]]}${this.getBaseWord(digits.bases[i])}`)
                         digits.nums[i + 1] = 0;
                     } else {
-                        result.push(this.tens[digits.nums[i]] + this.getBaseWord(digits.bases[i]))
+                        result.push(`${this.tens[digits.nums[i]]}${this.getBaseWord(digits.bases[i])}`)
                     }
                 }
                 else {
-                    result.push(this.ones[digits.nums[i]] + this.getBaseWord(digits.bases[i]))
+                    result.push(`${this.ones[digits.nums[i]]}${this.getBaseWord(digits.bases[i])}`)
                 }
             }
         }
@@ -151,7 +141,7 @@ export class NumberParser {
         
         for (var i = 0; i < count; ++i) {
             if (fragments[i] && fragments[i].length){
-                result = result.concat(separators[i].concat(fragments[i]))
+                result = `${result}${separators[i]}${fragments[i]}`
             }   
         }
 

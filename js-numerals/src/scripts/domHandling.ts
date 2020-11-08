@@ -16,7 +16,7 @@ export class DomHandling {
     }
 
     setResult(text: string) {
-        let resultSpan = document.getElementById("result");
+        let resultSpan = this.window.document.getElementById("result");
         if (resultSpan) {
             resultSpan.innerHTML = text;
         }

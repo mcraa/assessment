@@ -21,7 +21,8 @@ describe('Numbers converter', () => {
         { num: 1000000, text: "one million" },
         { num: 154011, text: "one hundred and fifty-four thousand and eleven" },
         { num: 1010, text: "one thousand and ten" },
-        { num: 1000, text: "one thousand" }
+        { num: 1000, text: "one thousand" },
+        { num: 2222, text: "twenty-two hundred and twenty-two" }
     ]
 
     acceptance.concat(others).forEach(ac => {        

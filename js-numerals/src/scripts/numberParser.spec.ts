@@ -49,4 +49,32 @@ describe('NumberParser', () => {
         expect(hundred).equal(" hundred");
         expect(none).equal("");
     })
+
+    it('should create the separators with and', () => {
+        const parser = new NumberParser();
+
+        let digits = { bases: [1000,100,10,1], nums: [1,1,0,1]}
+        let separators = parser.getSeparators(digits);
+
+        expect(separators).to.eql([ , " ", " ", " and "])
+    });
+
+    it('should create the separators without and', () => {
+        const parser = new NumberParser();
+
+        let digits = { bases: [1000,100,10,1], nums: [0,1,0,0]}
+        let separators = parser.getSeparators(digits);
+
+        expect(separators).to.eql([ , " ", , ])
+    })
+
+    it('should create the separators with dash', () => {
+        const parser = new NumberParser();
+
+        let digits = { bases: [1000,100,10,1], nums: [0,0,4,2]}
+        let separators = parser.getSeparators(digits);
+
+        expect(separators).to.eql([ ,," ","-" ])
+    })
+
 })

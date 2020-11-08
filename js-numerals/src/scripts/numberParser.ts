@@ -92,4 +92,28 @@ export class NumberParser {
         if (!word) word = "";
         return word;
     }
+
+    getSeparators(info: DigitAnalytics): string[] {
+        let needsAnd = info.nums.filter(v => v > 0 ).length > 1;
+       
+        let separators: string[] = [];
+        if (info.nums[info.nums.length-1] > 0 && info.nums[info.nums.length-2] > 1) {
+            separators[info.nums.length-1] = "-";
+        }
+
+        for (var i = info.nums.length-1; i > 0; --i) {
+            if (!separators[i]) {
+                if (needsAnd) {
+                    if (info.nums[i] > 0) {
+                        needsAnd = false
+                        separators[i] = " and ";
+                    } 
+                } else {
+                    separators[i] = " ";
+                }
+            } 
+        }
+        
+        return separators;
+    }
 }

@@ -17,9 +17,9 @@ export class DomHandling {
 
     setResult(text: string) {
         let resultSpan = document.getElementById("result");
-            if (resultSpan) {
-                resultSpan.innerHTML = text;
-            }
+        if (resultSpan) {
+            resultSpan.innerHTML = text;
+        }
     }
 
 }

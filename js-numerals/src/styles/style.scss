@@ -1,0 +1,10 @@
+$bg-color: gray;
+
+body {
+  background-color: $bg-color;
+
+  div {
+      margin: 0 auto;
+      width: 50%;
+  }
+}

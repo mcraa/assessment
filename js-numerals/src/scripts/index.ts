@@ -1,3 +1,4 @@
+import '../styles/style.scss';
 
 import { DomHandling } from './domHandling';
 import { NumberParser } from './numberParser'

@@ -56,7 +56,7 @@ describe('NumberParser', () => {
         let digits = { bases: [1000,100,10,1], nums: [1,1,0,1]}
         let separators = parser.getSeparators(digits);
 
-        expect(separators).to.eql([ , " ", " ", " and "])
+        expect(separators).to.eql([ , " ", , " and "])
     });
 
     it('should create the separators without and', () => {
@@ -65,7 +65,7 @@ describe('NumberParser', () => {
         let digits = { bases: [1000,100,10,1], nums: [0,1,0,0]}
         let separators = parser.getSeparators(digits);
 
-        expect(separators).to.eql([ , " ", , ])
+        expect(separators).to.eql([ , " " ])
     })
 
     it('should create the separators with dash', () => {
@@ -75,6 +75,15 @@ describe('NumberParser', () => {
         let separators = parser.getSeparators(digits);
 
         expect(separators).to.eql([ ,," ","-" ])
+    })
+
+    it('should create the separators with dash and and', () => {
+        const parser = new NumberParser();
+
+        let digits = { bases: [1000,100,10,1], nums: [1,0,4,2]}
+        let separators = parser.getSeparators(digits);
+
+        expect(separators).to.eql([ ,," and ","-" ])
     })
 
 })

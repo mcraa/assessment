@@ -95,7 +95,13 @@ export class NumberParser {
 
     getSeparators(info: DigitAnalytics): string[] {
         let needsAnd = info.nums.filter(v => v > 0 ).length > 1;
-       
+        if (needsAnd) {
+            let copy = [...info.nums]
+            copy.pop()
+            copy.pop()
+            needsAnd = copy.filter(v => v > 0).length > 0
+        }
+
         let separators: string[] = [];
         if (info.nums[info.nums.length-1] > 0 && info.nums[info.nums.length-2] > 1) {
             separators[info.nums.length-1] = "-";
@@ -109,7 +115,8 @@ export class NumberParser {
                         separators[i] = " and ";
                     } 
                 } else {
-                    separators[i] = " ";
+                    if (info.nums[i])
+                        separators[i] = " ";
                 }
             } 
         }

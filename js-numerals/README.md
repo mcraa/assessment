@@ -23,3 +23,16 @@ For example:
 </pre>
 
 That's all.
+
+---
+
+# Solution / Usage
+
+ 1. clone the repo
+ 2. run `npm install` * assumes node intalled
+ 3. build / develop / test
+    1. to build and observe: run `npm run build` and open `index.html` from the `dist` folder
+    2. develop: run `npm run dev` then open `http://localhost:9000` reloads when files changed
+    3. unit tests: `npm run test`
+    4. e2e test: `npm run e2e` or `npm run e2e:dev` the latter keeps the test and devserver open. E2e test runs with Chrome by default, so that should be installed.
+    

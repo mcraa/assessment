@@ -27,12 +27,26 @@ describe('NumberParser', () => {
         expect(a2.nums).to.eql([0,2,2,2,2])
     });
 
-    it('should get text from the digits', () => {
+    it('should get text for the digits', () => {
         const parser = new NumberParser();
 
         let digits = { bases: [1000,100,10,1], nums: [1,1,0,1]}
-        let text = parser.sayDigitAnalisys(digits)
+        let texts = parser.getTextsForDigits(digits)
 
-        expect(text).to.be.equal("one thousand one hundred and one")
+        expect(texts).to.be.eql(["one thousand", "one hundred", "", "one"])
+    })
+
+    it('should get the base word', () => {
+        const parser = new NumberParser();
+
+        let million = parser.getBaseWord(1000000);
+        let thousand = parser.getBaseWord(1000);
+        let hundred = parser.getBaseWord(100);
+        let none = parser.getBaseWord(10);
+
+        expect(million).equal(" million");
+        expect(thousand).equal(" thousand");
+        expect(hundred).equal(" hundred");
+        expect(none).equal("");
     })
 })

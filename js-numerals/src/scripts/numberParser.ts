@@ -30,56 +30,66 @@ export class NumberParser {
             return "";
         }
 
+
         return numText;
     }
 
     analyzeDigits(num: number, base: number): DigitAnalytics {
-        let bases = [];        
+        let bases = [];
         let nums = [];
         bases.push(base);
         nums.push(Math.floor(num / base))
         let nextStepBase = this.steps[base] != 0;
-        while(nextStepBase) {            
+        while (nextStepBase) {
             num = num % base;
             base = base / this.steps[base];
             bases.push(base);
             nums.push(Math.floor(num / base));
             nextStepBase = this.steps[base] != 0;
         }
-        
+
         return { bases, nums }
     }
 
-    sayDigitAnalisys(digits: DigitAnalytics): string {
-        let result = "";
+    getTextsForDigits(digits: DigitAnalytics): string[] {
+        let result: string[] = [];
 
         for (var i = 0; i < digits.bases.length; ++i) {
-            if (digits.nums[i] == 0) { continue; }
+            if (digits.nums[i] == 0) { result.push(""); continue; }
 
-            let astext = digits.nums[i].toString()            
+            let astext = digits.nums[i].toString()
             if (astext.length > 2) {
-                result = result.concat(this.sayDigitAnalisys(this.analyzeDigits(digits.nums[i], digits.bases[i])) + this.words[digits.bases[i]]);
-            } else if (astext.length == 2) {   
-                if (astext[0] == '1'){
-                    result = result.concat(this.teens[parseInt(astext[1])] + this.words[digits.bases[i]])
+                result.push(
+                    this.getTextsForDigits(this.analyzeDigits(digits.nums[i], digits.bases[i]))
+                    + this.getBaseWord(digits.bases[i]));
+            } else if (astext.length == 2) {
+                if (astext[0] == '1') {
+                    result.push(this.teens[parseInt(astext[1])] + this.getBaseWord(digits.bases[i]))
                 } else {
-                    result = result.concat(this.tens[parseInt(astext[0])] + this.words[digits.bases[i]])
+                    result.push(this.tens[parseInt(astext[0])] + this.getBaseWord(digits.bases[i]))
                 }
             } else {
                 if (digits.bases[i] == 10) {
                     if (digits.nums[i] == 1) {
-                        result = result.concat(this.teens[digits.nums[i+1]] +this.words[digits.bases[i]])
-                        digits.nums[i+1] = 0;
+                        result.push(this.teens[digits.nums[i + 1]] + this.getBaseWord(digits.bases[i]))
+                        digits.nums[i + 1] = 0;
                     } else {
-                        result = result.concat(this.tens[digits.nums[i]] +this.words[digits.bases[i]])
+                        result.push(this.tens[digits.nums[i]] + this.getBaseWord(digits.bases[i]))
                     }
                 }
                 else {
-                    result = result.concat(this.ones[digits.nums[i]] + this.words[digits.bases[i]])
+                    result.push(this.ones[digits.nums[i]] + this.getBaseWord(digits.bases[i]))
                 }
             }
         }
 
+
         return result;
+    }
+
+    getBaseWord(base: number): string {
+        let word = this.words[base];
+        if (!word) word = "";
+        return word;
     }
 }

@@ -15,6 +15,7 @@ export class App {
         
         if (num) {
             let text = this.numberParser.convertToText(num)
+            this.domHandling.setInputValue(num);
             this.domHandling.setResult(text);
         }
     }    

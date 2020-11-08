@@ -15,6 +15,13 @@ export class DomHandling {
         return (undefined);
     }
 
+    setInputValue(value: string) {
+        let element = this.window.document.getElementById('inputtext') as HTMLInputElement;
+        if (element) {
+            element.value =  value;
+        }
+    }
+
     setResult(text: string) {
         let resultSpan = this.window.document.getElementById("result");
         if (resultSpan) {

@@ -9,16 +9,15 @@ const document = window.document;
 global.window = window;
 global.document = document;
 
-import { App } from '../scripts/index'
 import { DomHandling } from '../scripts/domHandling'
 
-describe('App', () => {  
+describe('Domhandling', () => {  
 
-  it('should get a number', () => {
-    const app = new App(new DomHandling());
+  it('should get query value', () => {
+    const handler = new DomHandling();
 
-    app.handleNumberParsing();
+    handler.getQueryVariable("num");
 
-    expect(app).to.be.not.null;
+    expect(handler).to.be.not.null;
   });
 })

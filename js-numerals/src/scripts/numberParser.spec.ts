@@ -25,5 +25,14 @@ describe('NumberParser', () => {
 
         expect(a2.bases).to.eql([1000000,1000,100,10,1])
         expect(a2.nums).to.eql([0,2,2,2,2])
+    });
+
+    it('should get text from the digits', () => {
+        const parser = new NumberParser();
+
+        let digits = { bases: [1000,100,10,1], nums: [1,1,0,1]}
+        let text = parser.sayDigitAnalisys(digits)
+
+        expect(text).to.be.equal("one thousand one hundred and one")
     })
 })

@@ -16,7 +16,7 @@ describe('App', () => {
   it('should get a number', () => {
     const app = new App();
 
-    app.handleNumberParsing("none");
+    app.handleNumberParsing();
 
     expect(app).to.be.not.null;
   });

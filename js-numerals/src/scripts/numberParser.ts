@@ -115,12 +115,26 @@ export class NumberParser {
                         separators[i] = " and ";
                     } 
                 } else {
-                    if (info.nums[i])
+                    if (info.nums[i]) {
                         separators[i] = " ";
+                    } else {
+                        separators[i] = ""
+                    }
                 }
             } 
         }
         
         return separators;
+    }
+
+    concatFragments(fragments: string[], separators: string[], count: number): string {
+        let result = fragments[0];
+        for (var i = 1; i < count; ++i) {
+            if (fragments[i] && fragments[i].length){
+                result = result.concat(separators[i].concat(fragments[i]))
+            }   
+        }
+
+        return result;
     }
 }

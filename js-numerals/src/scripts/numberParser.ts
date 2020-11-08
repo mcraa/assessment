@@ -29,12 +29,15 @@ export class NumberParser {
             return "";
         }
 
+        let negative = false;
+
         if (parsed == 0) return "zero"
+        if (parsed < 0) { negative = true; parsed = parsed * -1}
 
         if (numText.length == 4 && numText[1] != '0') {
-            return this.convertProcess(parsed, 100)
+            return `${negative ? "negative" : ""} ${this.convertProcess(parsed, 100)}`
         } else {
-            return this.convertProcess(parsed, 1000000)
+            return `${negative ? "negative" : ""} ${this.convertProcess(parsed, 1000000)}`
         }
     }
 

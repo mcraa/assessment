@@ -1,16 +1,18 @@
 $bg-color: purple;
+$bg-alternate: #fffaf0;
+$accent-color: #dda0dd;
+
 
 * {
     text-align: center;
+    margin: 0;
 }
 
 body {
   background-color: $bg-color;
   display: flex;
   align-content: center;
-
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-
   padding-top: 50px;
 
   div {
@@ -19,19 +21,34 @@ body {
     flex-direction: column;
     flex: 0.5;
     align-content: center;
-    border: 1px solid gray;
     box-shadow: 1px 2px 5px;
-    background-color: white;
+    background-color: $bg-alternate;
     margin: 0 auto;
     padding: 50px 30px;
 
     form {
         text-align: center;
         padding: 30px;
+
+        input {
+          margin-bottom: 10px;
+          line-height: 2em;
+          font-size: 24px;
+          background-color: $bg-alternate;
+        }
+
+        button {
+          line-height: 2em;
+          font-size: 24px;
+        }
     }
 
     span {
         font-weight: bold;
+        font-size: 18px;
+        background-color: $accent-color;
+        padding: 30px;
+        width: 100%;
     }
   }
 }

@@ -1,12 +1,15 @@
 
-// to dismiss warning
-// declare var window: any;
-
 export class App {
     handleNumberParsing() {
         let val = ""
         let num = this.getQueryVariable("num")
         
+        if (num) {
+            let resultSpan = document.getElementById("result");
+            if (resultSpan) {
+                resultSpan.innerHTML = num;
+            }
+        }
         console.log(num);
     }
 

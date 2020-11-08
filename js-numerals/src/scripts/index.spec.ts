@@ -11,11 +11,12 @@ global.document = document;
 
 import { App } from '../scripts/index'
 import { DomHandling } from '../scripts/domHandling'
+import { NumberParser } from './numberParser'
 
 describe('App', () => {  
 
-  it('should get a number', () => {
-    const app = new App(new DomHandling(window));
+  it('should exist', () => {
+    const app = new App(new DomHandling(window), new NumberParser);
 
     app.handleNumberParsing();
 

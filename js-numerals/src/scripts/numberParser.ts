@@ -1,4 +1,3 @@
-
 export interface DigitAnalytics {
     bases: number[];
     nums: number[];
@@ -30,8 +29,20 @@ export class NumberParser {
             return "";
         }
 
+        if (parsed == 0) return "zero"
 
-        return numText;
+        if (numText.length == 4 && numText[1] != '0') {
+            return this.convertProcess(parsed, 100)
+        } else {
+            return this.convertProcess(parsed, 1000000)
+        }
+    }
+
+    convertProcess(num: number, base: number): string {
+        let digits = this.analyzeDigits(num, base);
+        let parts = this.getTextsForDigits(digits);
+        let separators = this.getSeparators(digits);
+        return this.concatFragments(parts, separators, digits.bases.length)
     }
 
     analyzeDigits(num: number, base: number): DigitAnalytics {
@@ -112,7 +123,7 @@ export class NumberParser {
             separators[info.nums.length-1] = "-";
         }
 
-        for (var i = info.nums.length-1; i > 0; --i) {
+        for (var i = info.nums.length-1; i >= 0; --i) {
             if (!separators[i]) {
                 if (needsAnd) {
                     if (info.nums[i] > 0) {

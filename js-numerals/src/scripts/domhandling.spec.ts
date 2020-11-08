@@ -4,20 +4,19 @@ import { JSDOM } from 'jsdom';
 
 
 declare var global: any;
-const window = new JSDOM("").window;
-const document = window.document;
-global.window = window;
-global.document = document;
+
+const jsdom = new JSDOM("", { url: "http://domain.locator/?num=1" });
+const window = jsdom.window;
 
 import { DomHandling } from '../scripts/domHandling'
 
-describe('Domhandling', () => {  
+describe('Domhandling', () => {
 
-  it('should get query value', () => {
-    const handler = new DomHandling();
+    it('should get query value', () => {
+        const handler = new DomHandling(window);
 
-    handler.getQueryVariable("num");
+        let result = handler.getQueryVariable("num");
 
-    expect(handler).to.be.not.null;
-  });
+        expect(result).to.be.equal("1");
+    });
 })

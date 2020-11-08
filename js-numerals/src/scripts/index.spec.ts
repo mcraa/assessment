@@ -15,7 +15,7 @@ import { DomHandling } from '../scripts/domHandling'
 describe('App', () => {  
 
   it('should get a number', () => {
-    const app = new App(new DomHandling());
+    const app = new App(new DomHandling(window));
 
     app.handleNumberParsing();
 

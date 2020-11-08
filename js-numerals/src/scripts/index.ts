@@ -8,18 +8,14 @@ export class App {
     ) { }
 
     handleNumberParsing() {
-        let val = ""
         let num = this.domHandling.getQueryVariable("num")
         
         if (num) {
-            let resultSpan = document.getElementById("result");
-            if (resultSpan) {
-                resultSpan.innerHTML = num;
-            }
+            this.domHandling.setResult(num);
         }
     }
 
     
 }
 
-window.onload = () => new App(new DomHandling()).handleNumberParsing()
+window.onload = () => new App(new DomHandling(window)).handleNumberParsing()

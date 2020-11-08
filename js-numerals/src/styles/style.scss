@@ -1,10 +1,43 @@
-$bg-color: gray;
+$bg-color: purple;
+
+* {
+    text-align: center;
+}
 
 body {
   background-color: $bg-color;
+  display: flex;
+  align-content: center;
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+
+  padding-top: 50px;
 
   div {
-      margin: 0 auto;
-      width: 50%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex: 0.5;
+    align-content: center;
+    border: 1px solid gray;
+    box-shadow: 1px 2px 5px;
+    background-color: white;
+    margin: 0 auto;
+    padding: 50px 30px;
+
+    form {
+        text-align: center;
+        padding: 30px;
+    }
+
+    span {
+        font-weight: bold;
+    }
   }
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }

@@ -36,6 +36,15 @@ describe('NumberParser', () => {
         expect(texts).to.be.eql(["one thousand", "one hundred", "", "one"])
     })
 
+    it('should get text for the multiple digits', () => {
+        const parser = new NumberParser();
+
+        let digits = { bases: [1000,100,10,1], nums: [115,0,0,0]}
+        let texts = parser.getTextsForDigits(digits)
+
+        expect(texts).to.be.eql(["one hundred and fifteen thousand", "", "", ""])
+    })
+
     it('should get the base word', () => {
         const parser = new NumberParser();
 
@@ -89,7 +98,6 @@ describe('NumberParser', () => {
     it('should join the parts with separator', () => {
         const parser = new NumberParser();
 
-        let digits = { bases: [1000,100,10,1], nums: [1,0,4,2]}
         let separators = [ "",""," and ","-" ];
         let parts = ["one thousand", "", "fourty", "two"]
         let result = parser.concatFragments(parts, separators, 4)

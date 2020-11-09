@@ -5,7 +5,6 @@
   "scripts": {
     "test": "mocha -r ts-node/register src/scripts/**/*spec.ts",
     "e2e": "wdio wdio.conf.js --spec ./e2e/**/*.ts",
-    "e2e:dev": "wdio wdio.conf.js --spec ./e2e/**/*.ts --watch",
     "build": "webpack",
     "dev": "webpack serve"
   },

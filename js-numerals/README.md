@@ -34,5 +34,5 @@ That's all.
     1. to build and observe: run `npm run build` and open `index.html` from the `dist` folder
     2. develop: run `npm run dev` then open `http://localhost:9000` reloads when files changed
     3. unit tests: `npm run test`
-    4. e2e test: `npm run e2e` or `npm run e2e:dev` the latter keeps the test and devserver open. E2e test runs with Chrome by default, so that should be installed.
+    4. e2e test: `npm run e2e` E2e test runs with Chrome by default, so that should be installed. (runs headless with the current config)
     

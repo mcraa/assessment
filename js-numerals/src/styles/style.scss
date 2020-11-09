@@ -8,8 +8,13 @@ $accent-color: #dda0dd;
     margin: 0;
 }
 
+html {
+  background: linear-gradient($bg-color, $accent-color);
+  background-size: cover;
+  height: 100%;
+}
+
 body {
-  background-color: $bg-color;
   display: flex;
   align-content: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -46,9 +51,12 @@ body {
     span {
         font-weight: bold;
         font-size: 18px;
-        background-color: $accent-color;
-        padding: 30px;
         width: 100%;
+        
+        &#result {
+          padding: 30px;
+          background-color: $accent-color;
+        }
     }
   }
 }

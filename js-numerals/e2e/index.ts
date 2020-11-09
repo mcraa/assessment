@@ -43,4 +43,16 @@ describe('Numbers converter', () => {
         })
         
     });
+
+    it('should show error message', async () => {
+        await browser.url('/');
+
+        let input = await browser.$('#inputtext');
+        await input.setValue("k");
+
+        let message = await browser.$("#message")
+        let text = await message.getText();
+        
+        expect(text).toBe("Only integers please.")
+    })
 })

@@ -1,4 +1,4 @@
-export interface DigitAnalytics {
+interface DigitAnalytics {
     bases: number[];
     nums: number[];
 }
@@ -58,7 +58,7 @@ export class NumberParser {
         let digits = this.analyzeDigits(num, base);
         let parts = this.getTextsForDigits(digits);
         let separators = this.getSeparators(digits);
-        return this.concatFragments(parts, separators, digits.bases.length)
+        return this.concatFragments(parts, separators)
     }
 
     analyzeDigits(num: number, base: number): DigitAnalytics {
@@ -151,10 +151,10 @@ export class NumberParser {
         return separators;
     }
 
-    concatFragments(fragments: string[], separators: string[], count: number): string {        
+    concatFragments(fragments: string[], separators: string[]): string {        
         let result = "";        
         
-        for (var i = 0; i < count; ++i) {
+        for (var i = 0; i < separators.length; ++i) {
             if (fragments[i] && fragments[i].length){
                 result = `${result}${separators[i]}${fragments[i]}`
             }   

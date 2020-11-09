@@ -100,7 +100,7 @@ describe('NumberParser', () => {
 
         let separators = [ "",""," and ","-" ];
         let parts = ["one thousand", "", "fourty", "two"]
-        let result = parser.concatFragments(parts, separators, 4)
+        let result = parser.concatFragments(parts, separators)
 
         expect(result).to.eql("one thousand and fourty-two")
     })

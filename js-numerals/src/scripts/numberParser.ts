@@ -3,10 +3,16 @@ export interface DigitAnalytics {
     nums: number[];
 }
 
+enum DictScale {
+    ONE = 'ones',
+    TY = 'tys',
+    TEEN = 'teens'
+}
+
 export class NumberParser {
 
     ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
-    tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    tys = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
     teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
 
     steps: { [index: number]: number } = {
@@ -77,21 +83,20 @@ export class NumberParser {
 
         for (var i = 0; i < digits.bases.length; ++i) {
             if (digits.nums[i] == 0) { result.push(""); continue; }
-
-            let astext = digits.nums[i].toString()
-            if (astext.length > 1) {
+ 
+            if (digits.nums[i].toString().length > 1) {
                 result.push(`${this.convertProcess(digits.nums[i], digits.bases[i])}${this.getBaseWord(digits.bases[i])}`);                
             } else {
                 if (digits.bases[i] == 10) {
                     if (digits.nums[i] == 1) {
-                        result.push(this.getFragment('teens', digits, i+1, i))
+                        result.push(this.getFragment(DictScale.TEEN, digits, i+1, i))
                         digits.nums[i + 1] = 0;
                     } else {
-                        result.push(this.getFragment('tens', digits, i))
+                        result.push(this.getFragment(DictScale.TY, digits, i))
                     }
                 }
                 else {
-                    result.push(this.getFragment('ones', digits, i))
+                    result.push(this.getFragment(DictScale.ONE, digits, i))
                 }
             }
         }
@@ -100,7 +105,7 @@ export class NumberParser {
         return result;
     }
 
-    getFragment(scale: 'ones' | 'tens' | 'teens', digits: DigitAnalytics, numPosition: number, basePosition?: number): string {
+    getFragment(scale: DictScale, digits: DigitAnalytics, numPosition: number, basePosition?: number): string {
         if (!basePosition) basePosition = numPosition;
         
         return `${this[scale][digits.nums[numPosition]]}${this.getBaseWord(digits.bases[basePosition])}`

@@ -29,19 +29,23 @@ export class NumberParser {
             return "";
         }
 
-        let negative = false;
+        let isNegative = false;
         let result = "";
 
         if (parsed == 0) return "zero"
-        if (parsed < 0) { negative = true; parsed = parsed * -1}
+        if (parsed < 0) { isNegative = true; parsed = parsed * -1}
 
         if (numText.length == 4 && numText[1] != '0') {
-            result = `${negative ? "negative" : ""} ${this.convertProcess(parsed, 100)}`
+            result = `${this.addParity(isNegative)}${this.convertProcess(parsed, 100)}`
         } else {
-            result = `${negative ? "negative" : ""} ${this.convertProcess(parsed, 1000000)}`
+            result = `${this.addParity(isNegative)}${this.convertProcess(parsed, 1000000)}`
         }
 
         return result.trim()
+    }
+
+    addParity(isNegative: boolean) {
+        return `${isNegative ? "negative " : ""}`
     }
 
     convertProcess(num: number, base: number): string {
@@ -80,20 +84,26 @@ export class NumberParser {
             } else {
                 if (digits.bases[i] == 10) {
                     if (digits.nums[i] == 1) {
-                        result.push(`${this.teens[digits.nums[i + 1]]}${this.getBaseWord(digits.bases[i])}`)
+                        result.push(this.getFragment('teens', digits, i+1, i))
                         digits.nums[i + 1] = 0;
                     } else {
-                        result.push(`${this.tens[digits.nums[i]]}${this.getBaseWord(digits.bases[i])}`)
+                        result.push(this.getFragment('tens', digits, i))
                     }
                 }
                 else {
-                    result.push(`${this.ones[digits.nums[i]]}${this.getBaseWord(digits.bases[i])}`)
+                    result.push(this.getFragment('ones', digits, i))
                 }
             }
         }
 
 
         return result;
+    }
+
+    getFragment(scale: 'ones' | 'tens' | 'teens', digits: DigitAnalytics, numPosition: number, basePosition?: number): string {
+        if (!basePosition) basePosition = numPosition;
+        
+        return `${this[scale][digits.nums[numPosition]]}${this.getBaseWord(digits.bases[basePosition])}`
     }
 
     getBaseWord(base: number): string {

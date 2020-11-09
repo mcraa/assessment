@@ -22,10 +22,18 @@ export class DomHandling {
         }
     }
 
+    setMessage(value: string) {
+        this.setInnerHtml('message', value);
+    }
+
     setResult(text: string) {
-        let resultSpan = this.window.document.getElementById("result");
+        this.setInnerHtml("result", text);
+    }
+
+    private setInnerHtml(selectorId: string, value: string) {
+        let resultSpan = this.window.document.getElementById(selectorId);
         if (resultSpan) {
-            resultSpan.innerHTML = text;
+            resultSpan.innerHTML = value;
         }
     }
 

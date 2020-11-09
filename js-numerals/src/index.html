@@ -11,10 +11,17 @@
     <div>
         Enter a number and click sumbit (or press enter) to display it as english words.
         <form method="GET">
-            <input type="number" name="num" id="inputtext" autofocus/><button type="submit" id="submit-button">Submit</button>
+            <input type="number" name="num" id="inputtext" onkeyup="converterApp.instance.onTyped(event)" autofocus/><button type="submit" id="submit-button">Submit</button>
         </form>
+        <span id="message"></span>
         <span id="result"></span>
     </div>
 </body>
+
+<script>
+    window.onload = function() {
+        converterApp.instance.handleNumberParsing();
+    }
+</script>
 
 </html>

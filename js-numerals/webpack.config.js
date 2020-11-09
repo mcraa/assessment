@@ -11,6 +11,13 @@ module.exports = {
     module: {
       rules: [
         {
+          test: /index.ts/,
+          loader: 'expose-loader',
+          options: {
+            exposes: ['converterApp'],
+          },
+        },
+        {
           test: /\.ts?$/,
           use: 'ts-loader',
           exclude: /node_modules/,

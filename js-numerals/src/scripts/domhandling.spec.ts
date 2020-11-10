@@ -42,4 +42,13 @@ describe('Domhandling', () => {
 
         expect(spy.calledWithExactly("message")).to.be.true;
     })
+
+    it('should try to get element with id #inputtext', () => {
+        let spy = sandbox.spy(window.document, 'getElementById');
+        const handler = new DomHandling(window);
+
+        handler.setInputValue("Success");
+
+        expect(spy.calledWithExactly("inputtext")).to.be.true;
+    })
 })

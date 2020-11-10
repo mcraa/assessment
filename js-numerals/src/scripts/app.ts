@@ -10,9 +10,9 @@ export class App {
 
     handleNumberParsing() {
         let num = this.domHandling.getQueryVariable("num")
-
+        
         if (num && num.length) {
-            let text = this.numberParser.convertToText(num)
+            let text = this.numberParser.convertToText(num)          
             if (text && text.length) {
                 this.domHandling.setInputValue(num);
                 this.domHandling.setResult(text);

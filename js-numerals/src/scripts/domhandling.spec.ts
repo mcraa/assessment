@@ -3,9 +3,6 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { JSDOM } from 'jsdom';
 
-
-declare var global: any;
-
 const jsdom = new JSDOM(`<span id="test"></span>`, { url: "http://domain.locator/?num=1" });
 const window = jsdom.window;
 

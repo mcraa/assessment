@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import 'mocha';
 
-
 import { NumberParser } from '../scripts/numberParser'
 
 describe('NumberParser', () => {
@@ -9,9 +8,33 @@ describe('NumberParser', () => {
     it('should return text', () => {
         const parser = new NumberParser();
 
-        let result = parser.convertToText("7")
+        let result = parser.convertToText("57")
 
-        expect(result).to.be.equal("seven");
+        expect(result).to.be.equal("fifty-seven");
+    });
+
+    it('should return zero for zero', () => {
+        const parser = new NumberParser();
+
+        let result = parser.convertToText("0")
+
+        expect(result).to.be.equal("zero");
+    });
+
+    it('should return empty for non numeric', () => {
+        const parser = new NumberParser();
+
+        let result = parser.convertToText("bye")
+
+        expect(result).to.be.equal("");
+    });
+
+    it('should add negative prefix', () => {
+        const parser = new NumberParser();
+
+        let result = parser.convertToText("-1")
+
+        expect(result).to.be.equal("negative one");
     });
 
     it('should analyze the digits', () => {
@@ -25,6 +48,14 @@ describe('NumberParser', () => {
 
         expect(a2.bases).to.eql([1000000,1000,100,10,1])
         expect(a2.nums).to.eql([0,2,2,2,2])
+    });
+
+    it('should call convert with 100 for not round thousands', () => {
+        const parser = new NumberParser();
+
+        let result = parser.convertToText("2100");
+
+        expect(result).to.be.equal("twenty-one hundred");
     });
 
     it('should get text for the digits', () => {

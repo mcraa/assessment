@@ -35,6 +35,7 @@ That's all.
     2. develop: run `npm run dev` then open `http://localhost:9000`, reloads on file change
     3. unit tests: `npm run test` or `npm run test:watch` to rerun tests on any change
     4. e2e test: `npm run e2e` or `npm run e2e:dev` E2e test runs with Chrome by default, so that should be installed. (runs headless with the current config)
+    5. `npm run coverage` to generate test coverage report into the `coverage` folder
     
 ## Suggestion for development
 `npm run e2e:dev` (4.) keeps the hot reload server (2.) running too, so you can see the result in the browser. Keep a terminal open with this and another with `npm run test:watch` (3.) to get immediately notified when something goes south.

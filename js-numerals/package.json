@@ -6,7 +6,7 @@
     "test": "mocha -r ts-node/register src/scripts/**/*spec.ts",
     "test:watch": "mocha -r ts-node/register --watch --watch-files src/scripts src/scripts/**/*spec.ts",
     "e2e": "wdio wdio.conf.js --spec ./e2e/**/*.ts",
-    "e2e:watch": "wdio wdio.conf.js --spec ./e2e/**/*.ts --watch",
+    "e2e:watch": "wdio wdio.conf.js --watch",
     "build": "webpack",
     "dev": "webpack serve"
   },

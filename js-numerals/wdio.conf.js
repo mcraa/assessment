@@ -5,7 +5,7 @@ var server;
 exports.config = {
     onPrepare: () => {
         console.log("Starting webpack");
-        server = exec("npm run dev") 
+        server = exec("npm run dev")
     },
     onComplete: () => {
         if (server) {
@@ -114,6 +114,15 @@ exports.config = {
     //
     // Default timeout for all waitFor* commands.
     waitforTimeout: 10000,
+    //
+    // Add files to watch (e.g. application code or page objects) when running `wdio` command
+    // with `--watch` flag. Globbing is supported.
+    filesToWatch: [
+        // e.g. rerun tests if I change my application code
+        // './app/**/*.js'
+        './src/**/*.ts',
+        './e2e/**/*.ts'        
+    ],
     //
     // Default timeout in milliseconds for request
     // if browser driver or grid doesn't send response

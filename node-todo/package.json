@@ -1,0 +1,37 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "Api to handle todos",
+  "main": "index.ts",
+  "scripts": {
+    "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
+    "dev": "nodemon",
+    "test": "mocha"
+  },
+  "mocha": {
+    "include": "tests/**/*.ts",
+    "require": "ts-node/register"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/tests/**/*",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "./src/*.ts"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^14.14.9",
+    "mocha": "^8.2.1",
+    "nodemon": "^2.0.6",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2"
+  }
+}

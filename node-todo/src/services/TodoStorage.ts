@@ -97,6 +97,10 @@ export class TodoStorage {
         existingTodos.push(todo);
         await this.persistTodos(existingTodos);
 
+        if (todo.done) {
+            this.setArchiveQueue(todo.id, todo.done);
+        }
+
         return todo;
     }
 

@@ -7,11 +7,17 @@ export class TodoController {
         private storage: TodoStorage,
     ) { 
         router.get('/', this.getTodos)
-    }
+        router.get('/:id', this.getOneTodo)
+    } 
 
     getTodos = async (req: Request, res: Response) => {
         let result = await this.storage.getTodos()
         res.json(result);
+    }
+
+    getOneTodo = async (req: Request, res: Response) => {
+        let todo = await this.storage.getTodoById(req.params.id)
+        res.json(todo);
     }
 }
 

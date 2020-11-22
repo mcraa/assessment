@@ -19,7 +19,7 @@ describe("TodoController", () => {
         
         let sut = new TodoController(router, storage);
 
-        expect(spy.calledOnce).to.be.true
+        expect(spy.called).to.be.true
     })
 
     it("should retrieve todos", () => {
@@ -29,6 +29,20 @@ describe("TodoController", () => {
         
         let sut = new TodoController(router, storage);
         sut.getTodos({} as Request, {} as Response)
+
+        expect(spy.calledOnce).to.be.true
+
+    })
+
+    it("should retrieve one todo", () => {
+        let router = express.Router()
+        let storage = new TodoStorage("noname.json");
+        let spy = sandbox.spy(storage, "getTodoById")
+        let req = { params: {} } as Request
+        req.params["id"] = "id" 
+        
+        let sut = new TodoController(router, storage);
+        sut.getOneTodo(req, {} as Response)
 
         expect(spy.calledOnce).to.be.true
 

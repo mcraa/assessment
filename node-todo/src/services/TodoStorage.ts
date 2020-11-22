@@ -44,6 +44,10 @@ export class TodoStorage {
         })
     }
 
+    getPath(): string {
+        return this.path
+    }
+
     getTodos = (): Promise<Todo[]> => {
         return new Promise((resolve, reject) => {
             fs.readFile(this.path, (err, data) => {

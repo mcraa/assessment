@@ -3,7 +3,7 @@ import { Server } from 'http';
 
 export class App {
     constructor(
-        private express: Express,
+        public express: Express,
         private port: string
     ) { }
 
@@ -15,7 +15,7 @@ export class App {
         return this.express.use(fn);
     }
 
-    start(): Server {
+    start(): Server {        
         return this.express.listen(this.port, () => { console.log(`App started with ${this.port}`); })
     }
 }

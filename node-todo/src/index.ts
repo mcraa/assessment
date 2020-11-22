@@ -9,6 +9,7 @@ let port = process.env.port || '2233';
 let app = new App(express(), port);
 let storage = new TodoStorage(path.join(__dirname, "todos.json"))
 let router = express.Router();
+let server;
 
 (async() => {
 
@@ -17,6 +18,8 @@ let router = express.Router();
     app.useMiddleware(bodyParser.json())
     app.mountRoutes('/todos', todoRoutes(router, storage))
     
-    app.start();
+    server = app.start();
     
 })();
+
+export default { app, server, storage };

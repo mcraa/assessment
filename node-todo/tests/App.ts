@@ -25,7 +25,8 @@ describe('App', () => {
         let spy = sandbox.spy(expr, "listen");
 
         let sut = new App(expr, "1212");
-        sut.start()
+        let server = sut.start()
+        server.close();
 
         expect(spy.calledOnce).to.be.true
     })

@@ -6,10 +6,10 @@
   "scripts": {
     "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "dev": "nodemon",
-    "test": "mocha"
+    "test": "mocha "
   },
   "mocha": {
-    "include": "tests/**/*.ts",
+    "spec": "tests/**/*.ts",
     "require": "ts-node/register"
   },
   "nodemonConfig": {

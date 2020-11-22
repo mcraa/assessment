@@ -1,16 +1,16 @@
 import * as sinon from 'sinon'
 import { expect } from 'chai'
 
-import { StorageFile } from '../../src/services/StorageFile'
+import { TodoStorage } from '../../src/services/TodoStorage'
 
-describe('StorageFile', () => {
+describe('TodoStorage', () => {
     // const sandbox = sinon.createSandbox()
     // afterEach(() => {
     //     sandbox.restore();
     // })
 
     it('should exist', () => { 
-        let sut = new StorageFile();
+        let sut = new TodoStorage("");
 
         expect(sut).to.be.not.null
     })

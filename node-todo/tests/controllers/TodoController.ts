@@ -4,6 +4,7 @@ import { expect } from 'chai'
 import { TodoController } from '../../src/controllers/TodoController'
 import { TodoStorage } from '../../src/services/TodoStorage'
 var express = require('express')
+import { Request, Response } from 'express'
 
 describe("TodoController", () => {
     const sandbox = sinon.createSandbox()
@@ -19,5 +20,17 @@ describe("TodoController", () => {
         let sut = new TodoController(router, storage);
 
         expect(spy.calledOnce).to.be.true
+    })
+
+    it("should retrieve todos", () => {
+        let router = express.Router()
+        let storage = new TodoStorage("noname.json");
+        let spy = sandbox.spy(storage, "getTodos")
+        
+        let sut = new TodoController(router, storage);
+        sut.getTodos({} as Request, {} as Response)
+
+        expect(spy.calledOnce).to.be.true
+
     })
 })

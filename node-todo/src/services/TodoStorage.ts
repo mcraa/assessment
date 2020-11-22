@@ -53,8 +53,17 @@ export class TodoStorage {
         })
     }
 
+    getTodoById = async (id: string): Promise<Todo | undefined> => {
+        let all = await this.getTodos();
+        return all.find((v) => v.id === id)
+    }
+
     parseTodos = (file: Buffer): Todo[] => {
-        return JSON.parse(file.toString());
+        if (file) {
+            return JSON.parse(file.toString());
+        } else {
+            return [];
+        }
     }
 
 

@@ -1,17 +1,16 @@
 import { expect } from 'chai'
-import * as mocha from 'mocha'
 import * as fs from 'fs'
 import path from 'path'
+import * as sinon from 'sinon'
 
 import { TodoStorage } from '../../src/services/TodoStorage'
 import { Todo } from '../../src/models'
-import { time, timeEnd, timeLog, timeStamp } from 'console'
 
 describe('TodoStorage', () => {
-    // const sandbox = sinon.createSandbox()
-    // afterEach(() => {
-    //     sandbox.restore();
-    // })
+    const sandbox = sinon.createSandbox()
+    afterEach(() => {
+        sandbox.restore();
+    })
 
     it('should initialize storage', async () => {   
         let filePath = path.join(__dirname, "todos.json");
@@ -95,5 +94,29 @@ describe('TodoStorage', () => {
         fs.unlinkSync(filePath);
 
         expect(res).to.be.eql(todos)
+    })
+
+    it("should get Todo by id", async () => {
+        let todos: Todo[] = [
+            {
+                id: "id",
+                text: "text",
+                priority: 3,
+                done: false,
+            },
+            {
+                id: "id2",
+                text: "text",
+                priority: 3,
+                done: false,
+            }
+        ]
+
+        let sut = new TodoStorage("noname");
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res(todos) }));        
+
+        let res = await sut.getTodoById("id2")
+
+        expect(res).to.be.eql(todos[1])
     })
 })

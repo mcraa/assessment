@@ -11,6 +11,7 @@ export class TodoController {
         router.get('/:id', this.getOneTodo)
         router.post('/', this.postTodo)
         router.delete('/:id', this.deleteTodo)
+        router.put('/:id', this.putTodo)
     } 
 
     getTodos = async (req: Request, res: Response) => {
@@ -46,6 +47,15 @@ export class TodoController {
             res.send();
         } catch (error) {
             res.status(404).send(error)
+        }
+    }
+
+    putTodo = async (req: Request, res: Response) => {
+        try {
+            let newTodo = await this.storage.updateTodo(req.params.id, req.body)
+            res.json(newTodo);
+        } catch (error) {
+            res.status(405).send(error)
         }
     }
 

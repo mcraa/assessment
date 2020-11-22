@@ -3,6 +3,8 @@ import * as sinon from 'sinon'
 import { expect } from 'chai'
 import { TodoController } from '../../src/controllers/TodoController'
 import { TodoStorage } from '../../src/services/TodoStorage'
+import { Todo } from '../../src/models'
+
 var express = require('express')
 import { Request, Response } from 'express'
 
@@ -16,7 +18,7 @@ describe("TodoController", () => {
         let router = express.Router()
         let spy = sandbox.spy(router, "get")
         let storage = new TodoStorage("noname.json")
-        
+
         let sut = new TodoController(router, storage);
 
         expect(spy.called).to.be.true
@@ -26,7 +28,7 @@ describe("TodoController", () => {
         let router = express.Router()
         let storage = new TodoStorage("noname.json");
         let spy = sandbox.spy(storage, "getTodos")
-        
+
         let sut = new TodoController(router, storage);
         sut.getTodos({} as Request, {} as Response)
 
@@ -39,8 +41,8 @@ describe("TodoController", () => {
         let storage = new TodoStorage("noname.json");
         let spy = sandbox.spy(storage, "getTodoById")
         let req = { params: {} } as Request
-        req.params["id"] = "id" 
-        
+        req.params["id"] = "id"
+
         let sut = new TodoController(router, storage);
         sut.getOneTodo(req, {} as Response)
 
@@ -52,13 +54,15 @@ describe("TodoController", () => {
         let storage = new TodoStorage("noname.json");
         let spyCreate = sandbox.spy(storage, "createTodo")
 
-        let req = { body: {
-            id: "id",
-            text: "text",
-            priority: 3,
-            done: false,
-        } } as Request
-        
+        let req = {
+            body: {
+                id: "id",
+                text: "text",
+                priority: 3,
+                done: false,
+            }
+        } as Request
+
         let sut = new TodoController(router, storage);
         sut.postTodo(req, {} as Response)
 
@@ -71,11 +75,29 @@ describe("TodoController", () => {
         let spyDelete = sandbox.spy(storage, "removeTodo")
 
         let req = { params: {} } as Request
-        req.params["id"] = "id" 
-        
+        req.params["id"] = "id"
+
         let sut = new TodoController(router, storage);
         sut.deleteTodo(req, {} as Response)
 
         expect(spyDelete.calledOnceWithExactly("id")).to.be.true
+    })
+
+    it("should update one todo", () => {
+        let router = express.Router()
+        let storage = new TodoStorage("noname.json");
+        let spyUpdate = sandbox.spy(storage, "updateTodo")
+
+        let req = {
+            params: {}, body: {
+                done: false
+            }
+        } as Request
+        req.params["id"] = "id"
+
+        let sut = new TodoController(router, storage);
+        sut.putTodo(req, {} as Response)
+
+        expect(spyUpdate.calledOnceWithExactly("id", { done: false } as Todo )).to.be.true
     })
 })

@@ -5,6 +5,8 @@ import { Todo } from '../models'
 
 export class TodoStorage {
 
+    archiveQueue: { [index: string]: number } = {}
+
     constructor(private path: string) { }
 
     init = (): Promise<boolean> => {
@@ -61,25 +63,35 @@ export class TodoStorage {
 
     parseTodos = (file: Buffer): Todo[] => {
         if (file) {
-            return JSON.parse(file.toString());
+            let todos: Todo[] = JSON.parse(file.toString());
+            let originalLength = todos.length
+            let expiringTodos = Object.keys(this.archiveQueue);
+
+            let expiredTodos = expiringTodos
+                .map(v => this.archiveQueue[v] < Date.now() ? v : undefined) as string[];
+
+            for (var i = 0; i < expiredTodos.length; ++i) {
+                if (expiredTodos[i]) {
+                    let expiredIndex = todos.findIndex(v => v.id == expiredTodos[i]);
+                    todos.splice(expiredIndex, 1);
+                    delete this.archiveQueue[expiredTodos[i]]
+                }
+            }
+
+            if (originalLength != todos.length) {
+                this.persistTodos(todos);
+            }
+
+            return todos;
         } else {
             return [];
         }
     }
 
     createTodo = async (todo: Todo) => {
-        if (!todo.text) {
-            throw new Error("Todo text must be set")
-        }
+        this.validateTodo(todo);
 
         todo.id = nanoid();
-        if (!todo.priority) {
-            todo.priority = 3
-        }
-
-        if (!todo.done) { 
-            todo.done = false;
-        }
 
         let existingTodos = await this.getTodos();
         existingTodos.push(todo);
@@ -113,6 +125,62 @@ export class TodoStorage {
         await this.persistTodos(existingTodos);
     }
 
+    updateTodo = async (id:string, update: Todo) => {
+        let { text, priority, done } = update;
+        let existingTodos = await this.getTodos();
 
+        let oldTodo = existingTodos.findIndex(v => v.id === id);
 
+        if (oldTodo < 0) {
+            throw new Error("Todo does not exist");            
+        }
+
+        if (text) {
+            existingTodos[oldTodo].text = text;
+        }
+
+        if (priority) {
+            existingTodos[oldTodo].priority = priority;
+        }
+
+        if (typeof(done) === "boolean") {
+            this.setArchiveQueue(id, done);
+            existingTodos[oldTodo].done = done;
+        }
+
+        this.validateTodo(existingTodos[oldTodo]);
+        await this.persistTodos(existingTodos);
+
+        return existingTodos[oldTodo];        
+    }
+
+    validateTodo(todo: Todo) {
+        if (!todo.text) {
+            throw new Error("Todo text must be set")
+        }
+
+        if (todo.priority > 5 || todo.priority < 1) {
+            throw new Error("Invalid priority")
+        }
+
+        if (!todo.priority) {
+            todo.priority = 3
+        }
+
+        if (!todo.done) {
+            todo.done = false;
+        }
+
+        if (typeof(todo.done) !== 'boolean') {
+            throw new Error("Invalid value for done");            
+        }
+    }
+
+    setArchiveQueue(id:string, remove: boolean) {
+        if (remove) {
+            this.archiveQueue[id] = Date.now() + (1000 * 60 * 5)
+        } else {
+            delete this.archiveQueue[id];
+        }
+    }
 }

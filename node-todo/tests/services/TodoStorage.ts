@@ -189,4 +189,117 @@ describe('TodoStorage', () => {
         expect(err).to.be.not.null
         expect(saveStub.notCalled).to.be.true
     })
+
+    it("should validate a valid todo", () => {
+        let sut = new TodoStorage("noneam");
+
+        let validTodo: Todo = { id: "id", text: "hello", done: false, priority: 3 }
+        let err = null;
+        try {
+            sut.validateTodo(validTodo)            
+        } catch (error) {
+            err = error
+        }
+
+        expect(err).to.be.null;
+    })
+
+    it("should validate a invalid todo", () => {
+        let sut = new TodoStorage("noneam");
+
+        let invalidTodo: Todo = { id: "id", done: false, priority: 3 } as Todo
+        let err = null;
+        try {
+            sut.validateTodo(invalidTodo)            
+        } catch (error) {
+            err = error
+        }
+
+        expect(err).to.be.not.null;
+    })
+
+    it("should extend a valid todo", () => {
+        let sut = new TodoStorage("noneam");
+
+        let validTodo: Todo = { id: "id", text: "hello" } as Todo
+        let err = null;
+        try {
+            sut.validateTodo(validTodo)            
+        } catch (error) {
+            err = error
+        }
+
+        expect(err).to.be.null;
+    })
+
+    it("should update a valid todo", async () => {        
+        let sut = new TodoStorage("noname");
+        let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([{ id: "id" } as Todo ]) }));        
+
+        let err = null;
+        let res = null;
+        try {
+            res = await sut.updateTodo("id", { text: "hello" } as Todo)
+        } catch (error) {
+            err = error
+        }
+
+        let expectation: Todo = { id: "id", text: "hello", done: false, priority: 3 }
+        expect(err).to.be.null
+        expect(saveStub.calledOnceWithExactly([expectation])).to.be.true
+        expect(res).to.be.eql(expectation)
+    })
+
+    it("should queue a done todo", async () => {        
+        let sut = new TodoStorage("noname");
+        let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([{ id: "id" } as Todo ]) }));        
+
+        let err = null;
+        let res = null;
+        try {
+            res = await sut.updateTodo("id", { text: "hello", done: true } as Todo)
+        } catch (error) {
+            err = error
+        }
+
+        let expectation: Todo = { id: "id", text: "hello", done: true, priority: 3 }
+        expect(err).to.be.null
+        expect(saveStub.calledOnceWithExactly([expectation])).to.be.true
+        expect(sut.archiveQueue["id"]).to.be.not.null
+    })
+
+    it("should remove undone todo from queue", async () => {        
+        let sut = new TodoStorage("noname");
+        let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([{ id: "id" } as Todo ]) }));        
+
+        let err = null;
+        let res = null;
+        try {
+            res = await sut.updateTodo("id", { text: "hello", done: true } as Todo)
+            res = await sut.updateTodo("id", { text: "hello", done: false } as Todo)
+        } catch (error) {
+            err = error
+        }
+
+        expect(err).to.be.null
+        expect(sut.archiveQueue["id"]).to.be.undefined
+    })
+
+    it("should not show expired todos", async () => {        
+        let sut = new TodoStorage("noname");
+        let todos = [{id: "id"} ]
+        sut.archiveQueue["id"] = Date.now() - 200;
+
+        let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));            
+
+        let res = sut.parseTodos(Buffer.from(JSON.stringify(todos)))
+
+        expect(res).to.be.eql([])
+        expect(saveStub.calledOnceWithExactly([])).to.be.true
+    })
+
+
 })

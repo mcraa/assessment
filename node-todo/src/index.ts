@@ -1,10 +1,11 @@
 var express = require('express');
-import { Request, Response } from 'express';
+import { App } from './App';
+import { todoRoutes } from './controllers/TodoController'
 
-let app = express();
+let port = process.env.port || '2233';
+let app = new App(express(), port);
+let router = express.Router();
 
-app.get('/todos', (_: Request, res: Response) => {
-    res.send("Hello Todo")
-})
+app.mountRoutes('/todos', todoRoutes(router))
 
-app.listen(2233)
+app.start();

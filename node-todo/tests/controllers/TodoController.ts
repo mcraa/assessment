@@ -45,6 +45,23 @@ describe("TodoController", () => {
         sut.getOneTodo(req, {} as Response)
 
         expect(spy.calledOnce).to.be.true
+    })
 
+    it("should create one todo", () => {
+        let router = express.Router()
+        let storage = new TodoStorage("noname.json");
+        let spyCreate = sandbox.spy(storage, "createTodo")
+        
+        let req = { body: {
+            id: "id",
+            text: "text",
+            priority: 3,
+            done: false,
+        } } as Request
+        
+        let sut = new TodoController(router, storage);
+        sut.postTodo(req, {} as Response)
+
+        expect(spyCreate.calledOnce).to.be.true
     })
 })

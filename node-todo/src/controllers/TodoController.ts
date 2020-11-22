@@ -1,4 +1,5 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, json } from "express";
+import { Todo } from "../models";
 import { TodoStorage } from "../services/TodoStorage";
 
 export class TodoController {
@@ -8,6 +9,7 @@ export class TodoController {
     ) { 
         router.get('/', this.getTodos)
         router.get('/:id', this.getOneTodo)
+        router.post('/', this.postTodo)
     } 
 
     getTodos = async (req: Request, res: Response) => {
@@ -18,6 +20,23 @@ export class TodoController {
     getOneTodo = async (req: Request, res: Response) => {
         let todo = await this.storage.getTodoById(req.params.id)
         res.json(todo);
+    }
+
+    postTodo = async (req: Request, res: Response) => {
+        try {
+            let { text, priority, done } = req.body;
+            let todo = {
+                text,
+                priority,
+                done
+            } as Todo
+            let newTodo = await this.storage.createTodo(todo);
+
+            res.json(newTodo);
+            
+        } catch (error) {
+            res.send(error);
+        }
     }
 }
 

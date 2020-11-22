@@ -119,4 +119,45 @@ describe('TodoStorage', () => {
 
         expect(res).to.be.eql(todos[1])
     })
+
+    it("should create a todo with default fields", async () => {
+        let todo: Todo = 
+            {
+                text: "text"
+            } as Todo
+
+        let sut = new TodoStorage("noname");
+        sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([]) }));        
+
+        let res = await sut.createTodo(todo);
+
+        expect(res.text).to.be.eql(todo.text)
+        expect(res.id).to.be.not.null
+        expect(res.priority).to.be.equal(3)
+        expect(res.done).to.be.false
+    })
+
+    it("should create throw with missing field", async () => {
+        let todo: Todo = 
+            {
+                priority: 1
+            } as Todo
+
+        let sut = new TodoStorage("noname");
+        sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([]) }));        
+
+        let res = null;
+        let err = null;
+        try {
+            res = await sut.createTodo(todo);
+        } catch (error) {
+            err = error
+        }
+        expect(err).to.be.not.null
+        expect(res).to.be.null
+    })
+
+
 })

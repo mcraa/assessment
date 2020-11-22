@@ -1,4 +1,5 @@
 import * as fs from 'fs'
+import { nanoid } from 'nanoid'
 
 import { Todo } from '../models'
 
@@ -65,6 +66,40 @@ export class TodoStorage {
             return [];
         }
     }
+
+    createTodo = async (todo: Todo) => {
+        if (!todo.text) {
+            throw new Error("Todo text must be set")
+        }
+        
+        todo.id = nanoid();
+        if (!todo.priority) {
+            todo.priority = 3
+        }
+
+        if (!todo.done) { 
+            todo.done = false;
+        }
+
+        let existingTodos = await this.getTodos();
+        existingTodos.push(todo);
+        await this.persistTodos(existingTodos);
+
+        return todo;
+    }
+
+    persistTodos = (todos: Todo[]): Promise<void> => {
+        return new Promise((resolve, reject) => {
+            fs.writeFile(this.path, JSON.stringify(todos), (err) => {
+                if (err) {
+                    console.log("Can't save todos", err);
+                    reject(err);                    
+                }
+
+                resolve();
+            })
+        })
+    } 
 
 
 

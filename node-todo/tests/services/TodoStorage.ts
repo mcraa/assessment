@@ -1,9 +1,11 @@
 import { expect } from 'chai'
+import * as mocha from 'mocha'
 import * as fs from 'fs'
 import path from 'path'
 
 import { TodoStorage } from '../../src/services/TodoStorage'
 import { Todo } from '../../src/models'
+import { time, timeEnd, timeLog, timeStamp } from 'console'
 
 describe('TodoStorage', () => {
     // const sandbox = sinon.createSandbox()
@@ -11,10 +13,35 @@ describe('TodoStorage', () => {
     //     sandbox.restore();
     // })
 
-    it('should exist', () => {
-        let sut = new TodoStorage("");
+    it('should initialize storage', async () => {   
+        let filePath = path.join(__dirname, "todos.json");
 
-        expect(sut).to.be.not.null
+        let statBefore = null;
+        let errBefore = null;
+        let statAfter = null;
+        let errAfter = null 
+
+        try {
+            statBefore = fs.statSync(filePath)
+        } catch (error) {
+            errBefore = error
+        }
+
+        let sut = new TodoStorage(filePath);
+        let initialized = await sut.init();
+
+        try {
+            statAfter = fs.statSync(filePath)
+            fs.unlinkSync(filePath);            
+        } catch (error) {
+            errAfter = error
+        }
+
+        expect(initialized).to.be.true;
+        expect(statBefore).to.be.null
+        expect(statAfter).to.be.not.null
+        expect(errBefore).to.be.not.null
+        expect(errAfter).to.be.null
     })
 
     it("should parse Todos", () => {

@@ -138,7 +138,7 @@ describe('TodoStorage', () => {
         expect(res.done).to.be.false
     })
 
-    it("should create throw with missing field", async () => {
+    it("should throw with missing field", async () => {
         let todo: Todo = 
             {
                 priority: 1
@@ -159,5 +159,34 @@ describe('TodoStorage', () => {
         expect(res).to.be.null
     })
 
+    it("should remove a todo", async () => {        
+        let sut = new TodoStorage("noname");
+        let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([{ id: "id" } as Todo, { id: "id2" } as Todo ]) }));        
 
+        let err = null;
+        try {
+            await sut.removeTodo("id");
+        } catch (error) {
+            
+        }
+
+        expect(saveStub.calledOnceWithExactly([{ id: "id2" } as Todo ])).to.be.true
+    })
+
+    it("should not remove a not existing todo", async () => {        
+        let sut = new TodoStorage("noname");
+        let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
+        sandbox.stub(sut, "getTodos").returns(new Promise((res, _) => { res([{ id: "id" } as Todo ]) }));        
+
+        let err = null;
+        try {
+            await sut.removeTodo("nope")
+        } catch (error) {
+            err = error
+        }
+
+        expect(err).to.be.not.null
+        expect(saveStub.notCalled).to.be.true
+    })
 })

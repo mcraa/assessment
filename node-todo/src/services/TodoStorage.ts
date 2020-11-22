@@ -71,7 +71,7 @@ export class TodoStorage {
         if (!todo.text) {
             throw new Error("Todo text must be set")
         }
-        
+
         todo.id = nanoid();
         if (!todo.priority) {
             todo.priority = 3
@@ -100,6 +100,18 @@ export class TodoStorage {
             })
         })
     } 
+
+    removeTodo = async (todoId: string) => {
+        let existingTodos = await this.getTodos();
+        let index = existingTodos.findIndex(v => v.id == todoId)
+        if (index < 0) {
+            throw new Error("Todo does not exist");
+        }
+        
+        existingTodos.splice(index, 1);
+
+        await this.persistTodos(existingTodos);
+    }
 
 
 

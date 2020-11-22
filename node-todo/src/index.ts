@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 import path from 'path';
 import { App } from './App';
 import { todoRoutes } from './controllers/TodoController'
@@ -13,6 +14,7 @@ let router = express.Router();
 
     await storage.init();
 
+    app.useMiddleware(bodyParser.json())
     app.mountRoutes('/todos', todoRoutes(router, storage))
     
     app.start();

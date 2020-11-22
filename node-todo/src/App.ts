@@ -1,4 +1,4 @@
-import { Express, Router } from 'express'
+import { Express, Router, RequestHandler } from 'express'
 import { Server } from 'http';
 
 export class App {
@@ -9,6 +9,10 @@ export class App {
 
     mountRoutes(path: string, router: Router) {
         return this.express.use(path, router)
+    }
+
+    useMiddleware(fn: RequestHandler) {
+        return this.express.use(fn);
     }
 
     start(): Server {

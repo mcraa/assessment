@@ -1,4 +1,4 @@
-import { Router, Request, Response, json } from "express";
+import { Router, Request, Response } from "express";
 import { Todo } from "../models";
 import { TodoStorage } from "../services/TodoStorage";
 
@@ -10,6 +10,7 @@ export class TodoController {
         router.get('/', this.getTodos)
         router.get('/:id', this.getOneTodo)
         router.post('/', this.postTodo)
+        router.delete('/:id', this.deleteTodo)
     } 
 
     getTodos = async (req: Request, res: Response) => {
@@ -35,9 +36,19 @@ export class TodoController {
             res.json(newTodo);
             
         } catch (error) {
-            res.send(error);
+            res.status(405).send(error);
         }
     }
+
+    deleteTodo = async (req: Request, res: Response) => {
+        try {
+            await this.storage.removeTodo(req.params.id)
+            res.send();
+        } catch (error) {
+            res.status(404).send(error)
+        }
+    }
+
 }
 
 export const todoRoutes = (router: Router, store: TodoStorage) => new TodoController(router, store).router

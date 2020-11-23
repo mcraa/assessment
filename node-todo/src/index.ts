@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 import path from 'path';
 import { App } from './App';
 import { todoRoutes } from './controllers/TodoController'
-import { TodoStorage } from '../src/services/TodoStorage'
+import { TodoStorage } from './services/TodoStorage'
 
 let port = process.env.port || '2233';
 let app = new App(express(), port);

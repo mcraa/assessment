@@ -44,3 +44,14 @@ Removes a todo from the collection.
 1. Save all of the todos in a JSON file, if any modification happens. Load the collection from this file when the server restarts
 2. Remove todos that is done for 5 minutes
 3. Create unit tests for the API
+
+---
+# Usage
+
+> recommended to use VScode for development, if so `ctrl + shift + p` then `toggle auto attach` and select at least `only with flag` \
+> `mocha test explorer` also recommended for vscode
+
+ - `npm start` to run the server (attaches debugger with VScode)
+ - `npm run dev` to reload the server when modified
+ - `npm test` for running test and generating coverage
+ - `npm run build` to generate JS output into the `dist` folder

@@ -2,3 +2,5 @@ node_modules
 package-lock.json
 todos.json
 todos.json.que
+.nyc_output
+coverage

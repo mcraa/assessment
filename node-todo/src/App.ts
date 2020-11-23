@@ -2,6 +2,7 @@ import { Express, Router, RequestHandler } from 'express'
 import { Server } from 'http';
 
 export class App {
+    private server: Server
     constructor(
         public express: Express,
         private port: string
@@ -16,6 +17,11 @@ export class App {
     }
 
     start(): Server {        
-        return this.express.listen(this.port, () => { console.log(`App started with ${this.port}`); })
+        this.server = this.express.listen(this.port, () => { console.log(`App started with ${this.port}`); })
+        return this.server;
+    }
+
+    stop(): void {
+        this.server.close();
     }
 }

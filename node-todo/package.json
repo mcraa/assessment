@@ -6,11 +6,29 @@
   "scripts": {
     "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
     "dev": "nodemon",
-    "test": "mocha"
+    "test": "nyc mocha"
   },
   "mocha": {
-    "spec": ["tests/**/*.ts", "e2e/**/*.ts"],
+    "spec": [
+      "tests/**/*.ts",
+      "e2e/**/*.ts"
+    ],
     "require": "ts-node/register"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "coverage",
+      "tests/**/*.ts",
+      "e2e/**/*.ts",
+      "**/*.d.ts"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true
   },
   "nodemonConfig": {
     "ignore": [
@@ -36,6 +54,7 @@
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.6",
+    "nyc": "^15.1.0",
     "sinon": "^9.2.1",
     "supertest": "^6.0.1",
     "ts-node": "^9.0.0",

@@ -7,11 +7,14 @@ const request = require('supertest');
 import main from '../src'
 
 describe("Todo endpoints", () => {
-    after(() => {
-        if (main && main.server) {
-            main.server.close()
-        }
 
+    after(() => {
+        try {
+            main.app.stop()
+        } catch (error) {
+            console.log("Can't stop server");            
+        }
+        
         try {
             fs.unlink(main.storage.getPath())
             fs.unlink(`${main.storage.getPath()}.que`)

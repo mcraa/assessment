@@ -4,3 +4,4 @@ todos.json
 todos.json.que
 .nyc_output
 coverage
+dist

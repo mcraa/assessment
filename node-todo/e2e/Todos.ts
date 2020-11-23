@@ -12,7 +12,12 @@ describe("Todo endpoints", () => {
             main.server.close()
         }
 
-        fs.unlink(main.storage.getPath())
+        try {
+            fs.unlink(main.storage.getPath())
+            fs.unlink(`${main.storage.getPath()}.que`)
+        } catch (error) {
+            
+        }
     })
 
     it("GET /todos should return todos", (done) => {
@@ -61,6 +66,7 @@ describe("Todo endpoints", () => {
     it('PUT /todos/id should update a todo', (done) => {
         const todos = [{ id: "id", text: "bubu" }, { id: "id2", text: "yogi" }];
         fs.writeFileSync(main.storage.getPath(), JSON.stringify(todos));
+        fs.writeFileSync(`${main.storage.getPath()}.que`, JSON.stringify({}));
         
         request(main.app.express)
           .put('/todos/id')

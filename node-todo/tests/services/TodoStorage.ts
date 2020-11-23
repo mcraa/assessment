@@ -254,8 +254,8 @@ describe('TodoStorage', () => {
     it("should queue a done todo", async () => {    
         let filePath = path.join(__dirname, "todos.json");
         let filePathQue = filePath + '.que'
-        fs.openSync(filePathQue, "w+");
-        fs.writeFileSync(filePathQue, "{}")
+        tryCleanQue(filePath)
+        setupFile(filePathQue, "{}")
 
         let sut = new TodoStorage(filePath);
         let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
@@ -271,7 +271,7 @@ describe('TodoStorage', () => {
 
         let queue = JSON.parse(fs.readFileSync(filePathQue).toString())
 
-        fs.unlinkSync(filePathQue);   
+        tryCleanQue(filePath, true)  
 
         let expectation: Todo = { id: "id", text: "hello", done: true, priority: 3 }
         expect(err).to.be.null
@@ -282,8 +282,8 @@ describe('TodoStorage', () => {
     it("should remove undone todo from queue", async () => { 
         let filePath = path.join(__dirname, "todos.json");
         let filePathQue = filePath + '.que'
-        fs.openSync(filePathQue, "w+");
-        fs.writeFileSync(filePathQue, "{}")
+        tryCleanQue(filePath);
+        setupFile(filePathQue, "{}")
 
         let sut = new TodoStorage(filePath);
         let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));        
@@ -299,7 +299,7 @@ describe('TodoStorage', () => {
         }
 
         let queue = JSON.parse(fs.readFileSync(filePathQue).toString())
-        fs.unlinkSync(filePathQue);   
+        tryCleanQue(filePath, true)  
 
         expect(err).to.be.null
         expect(saveStub.calledTwice).to.be.true
@@ -309,22 +309,50 @@ describe('TodoStorage', () => {
     it("should not show expired todos", async () => {  
         let filePath = path.join(__dirname, "todos.json");
         let filePathQue = filePath + '.que'
-        fs.openSync(filePath, "w+");
-        fs.writeFileSync(filePath, JSON.stringify([{ id: "id", done: true}]))
-        fs.openSync(filePathQue, "w+");
-        fs.writeFileSync(filePathQue, JSON.stringify({ id: Date.now() - 200 }))
+        tryCleanAll(filePath)
+        setupFile(filePath, [{ id: "id", done: true}]);
+        setupFile(filePathQue, { id: Date.now() - 200 });
 
         let sut = new TodoStorage(filePath);
 
         let saveStub = sandbox.stub(sut, "persistTodos").returns(new Promise((res, _) => { res() }));            
 
         let res = await sut.getTodos()
-        fs.unlinkSync(filePath);   
-        fs.unlinkSync(filePathQue);   
+        tryCleanAll(filePath, true)
 
         expect(res).to.be.eql([])
         expect(saveStub.calledOnceWithExactly([])).to.be.true
     })
 
+    
+
 
 })
+
+let setupFile = (path: string, content: any) => {
+    fs.openSync(path, "w+");
+    fs.writeFileSync(path, JSON.stringify(content))
+}
+
+let tryCleanAll = (path, raise = false) => {
+    tryCleanTodos(path, raise)
+    tryCleanQue(path, raise)
+}
+
+let tryCleanQue = (path, raise = false) => {
+    tryClean(`${path}.que`, raise)
+}
+
+let tryCleanTodos = (path, raise = false) => {
+    tryClean(`${path}`, raise)
+}
+
+let tryClean = (path: string, raise = false) => {
+    try {
+        fs.unlinkSync(path);  
+    } catch (error) {
+        if (raise) {
+            console.log(`Can't delete ${path}`);        
+        }
+    }
+}

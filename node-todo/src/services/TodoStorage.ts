@@ -3,23 +3,32 @@ import { nanoid } from 'nanoid'
 
 import { Todo } from '../models'
 
-export class TodoStorage {
+interface ArchiveQue {
+    [index: string]: number
+}
 
-    archiveQueue: { [index: string]: number } = {}
+export class TodoStorage {
 
     constructor(private path: string) { }
 
-    init = (): Promise<boolean> => {
+    init = ():Promise<boolean[]> => {
+        return Promise.all([
+            this.initPath(this.path),
+            this.initPath(`${this.path}.que`, "{}")
+        ]) 
+    }
+
+    private initPath = (path: string, initContent: string = "[]" ): Promise<boolean> => {
         return new Promise((resolve, reject) => {
-            fs.stat(this.path, (err, stats) => {
+            fs.stat(path, (err, stats) => {
                 if (err) {
-                    fs.open(this.path, "w+", (err, fd) => {
+                    fs.open(path, "w+", (err, fd) => {
                         if (err) {
                             console.log("Can't create storage", err);
                             reject(err)                        
                         } else {
                             console.log("Todo store created");   
-                            fs.writeFile(this.path, "[]", (err) => {
+                            fs.writeFile(path, initContent, (err) => {
                                 if (err) {
                                     console.log("Can't initialze storage with []", err); 
                                     reject(err);                          
@@ -33,7 +42,7 @@ export class TodoStorage {
 
                     
                 } else {
-                    console.log(`Data stored in ${this.path}`);
+                    console.log(`Data stored in ${path}`);
                     console.log(`Existing size ${stats.size} bytes`);                
                     
                     resolve(true);
@@ -48,14 +57,45 @@ export class TodoStorage {
         return this.path
     }
 
-    getTodos = (): Promise<Todo[]> => {
+    getTodos = async (): Promise<Todo[]> => {
+        let todos = await this.getContent<Todo[]>(this.path);
+        if (todos.some(v => v.done)) {
+            let originalLength = todos.length
+            let archiveQueue = await this.getArchiveQue();
+            let expiringTodos = Object.keys(archiveQueue);
+            
+            let expiredTodos = expiringTodos
+                .map(v => archiveQueue[v] < Date.now() ? v : undefined) as string[];
+            
+            for (var i = 0; i < expiredTodos.length; ++i) {
+                if (expiredTodos[i]) {
+                    let expiredIndex = todos.findIndex(v => v.id == expiredTodos[i]);
+                    todos.splice(expiredIndex, 1);
+                    delete archiveQueue[expiredTodos[i]]
+                }
+            }
+            
+            if (originalLength != todos.length) {
+                this.persistTodos(todos);
+                this.persistQueue(archiveQueue)
+            }
+        }
+
+        return todos;
+    }
+
+    getArchiveQue = async () => {
+        return this.getContent<ArchiveQue>(`${this.path}.que`)
+    }
+
+    getContent<T>(path: string):Promise<T> {
         return new Promise((resolve, reject) => {
-            fs.readFile(this.path, (err, data) => {
+            fs.readFile(path, (err, data) => {
                 if (err) {
                     reject(err)
                 }
 
-                resolve(this.parseTodos(data));
+                resolve(this.parseContent<T>(data));
              })
         })
     }
@@ -64,31 +104,12 @@ export class TodoStorage {
         let all = await this.getTodos();
         return all.find((v) => v.id === id)
     }
-
-    parseTodos = (file: Buffer): Todo[] => {
+    
+    parseContent<T>(file: Buffer): T {
         if (file) {
-            let todos: Todo[] = JSON.parse(file.toString());
-            let originalLength = todos.length
-            let expiringTodos = Object.keys(this.archiveQueue);
+            let content: T = JSON.parse(file.toString());           
 
-            let expiredTodos = expiringTodos
-                .map(v => this.archiveQueue[v] < Date.now() ? v : undefined) as string[];
-
-            for (var i = 0; i < expiredTodos.length; ++i) {
-                if (expiredTodos[i]) {
-                    let expiredIndex = todos.findIndex(v => v.id == expiredTodos[i]);
-                    todos.splice(expiredIndex, 1);
-                    delete this.archiveQueue[expiredTodos[i]]
-                }
-            }
-
-            if (originalLength != todos.length) {
-                this.persistTodos(todos);
-            }
-
-            return todos;
-        } else {
-            return [];
+            return content;
         }
     }
 
@@ -109,17 +130,25 @@ export class TodoStorage {
     }
 
     persistTodos = (todos: Todo[]): Promise<void> => {
+        return this.persistItems(todos, this.path)        
+    } 
+
+    persistQueue = (que: ArchiveQue ) => {
+        this.persistItems(que, `${this.path}.que`)
+    }
+
+    persistItems = (items: Todo[] | { [index: string]: number }, path: string): Promise<void> => {
         return new Promise((resolve, reject) => {
-            fs.writeFile(this.path, JSON.stringify(todos), (err) => {
+            fs.writeFile(path, JSON.stringify(items), (err) => {
                 if (err) {
-                    console.log("Can't save todos", err);
+                    console.log(`Can't save to ${path}`, err);
                     reject(err);                    
                 }
 
                 resolve();
             })
         })
-    } 
+    }
 
     removeTodo = async (todoId: string) => {
         let existingTodos = await this.getTodos();
@@ -184,11 +213,21 @@ export class TodoStorage {
         }
     }
 
-    setArchiveQueue(id:string, remove: boolean) {
-        if (remove) {
-            this.archiveQueue[id] = Date.now() + (1000 * 60 * 5)
-        } else {
-            delete this.archiveQueue[id];
+    setArchiveQueue = async (id:string, remove: boolean) => {
+        let archiveQueue;
+        
+        try {
+            archiveQueue = await this.getArchiveQue();
+        } catch (error) {
+            console.log("Can't access archives");
         }
+
+        if (remove) {
+            archiveQueue[id] = Date.now() + (1000 * 60 * 5)
+        } else {
+            delete archiveQueue[id];
+        }
+
+        this.persistQueue(archiveQueue);
     }
 }
